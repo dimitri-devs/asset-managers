@@ -1,0 +1,172 @@
+You are a senior full-stack developer AND a world-class UI/UX designer.
+
+Your task is to build a COMPLETE, production-ready travel website inspired by the following Instagram page:
+
+https://www.instagram.com/elhawes
+
+This is NOT a basic project.  
+It must be a premium, high-conversion digital product comparable to Airbnb or Booking.com.
+
+---
+
+## 🎯 MAIN GOAL
+
+Transform this Instagram travel page into a fully functional, high-end web platform that:
+- Uses the same brand identity (name, vibe, style)
+- Displays Instagram content inside the website
+- Maximizes booking conversions
+- Feels modern, smooth, and premium
+
+---
+
+## 📱 INSTAGRAM INTEGRATION (IMPORTANT)
+
+Use Instagram as a core content source.
+
+Requirements:
+
+- Fetch and display images from the Instagram account dynamically
+  (via Instagram Graph API or scraping fallback if needed)
+
+- Use these images in:
+  - Homepage gallery
+  - Trips cards
+  - Background visuals
+
+- Create a section:
+  "From Instagram"
+  showing latest posts in a grid layout
+
+- Add:
+  - "Follow us on Instagram" button
+  - Direct link to the Instagram page
+
+- Keep design inspired by Instagram feed BUT more advanced
+
+---
+
+## 💰 LOCALIZATION (ALGERIA)
+
+- All prices must be displayed in:
+  Algerian Dinar (DZD)
+
+- Format prices properly:
+  Example: 15,000 DZD
+
+- Optionally:
+  - Prepare system to support multi-currency in future
+
+---
+
+## 🧠 UX STRATEGY
+
+- Mobile-first (Instagram audience)
+- Fast booking experience
+- Strong visual hierarchy
+
+Use:
+- Scarcity ("Only 3 spots left")
+- Urgency ("Limited offer")
+- Social proof (reviews)
+
+---
+
+## 🧱 TECH STACK
+
+- Next.js (App Router)
+- Node.js API routes
+- MongoDB (Mongoose)
+- NextAuth or JWT
+- Tailwind CSS + Framer Motion
+- Cloudinary for uploads
+
+---
+
+## 🌍 CLIENT SIDE
+
+### 🏠 Homepage
+- Hero section (image/video from Instagram)
+- CTA: "Explore Trips"
+
+Sections:
+- Featured trips
+- Instagram gallery (auto-fetched)
+- Testimonials
+- CTA
+
+---
+
+### ✈️ Trips Page
+- Instagram-style grid
+- Cards:
+  - Image
+  - Price (DZD)
+  - Location
+  - Duration
+
+---
+
+### 📄 Trip Details
+- Gallery (Instagram images if available)
+- Sticky booking panel
+- Sections (overview, highlights, etc.)
+
+---
+
+### 📝 Booking System
+- Simple form
+- Store data in DB
+- Smooth UX
+
+---
+
+## 🛠️ ADMIN DASHBOARD
+
+- Login system
+- Manage trips
+- Manage bookings
+
+Trips:
+- Add / edit / delete
+- Upload images OR select from Instagram
+
+Bookings:
+- Table view
+- Mark as contacted
+
+---
+
+## 🎨 DESIGN
+
+- Instagram-inspired but premium
+- Clean, modern, minimal
+- Card-based UI
+- Smooth animations
+
+---
+
+## ⚡ MICRO-INTERACTIONS
+
+- Hover effects
+- Page transitions
+- Loading skeletons
+
+---
+
+## 📦 OUTPUT
+
+Provide:
+1. Full project structure
+2. All code
+3. API integration (Instagram)
+4. Setup guide
+5. Environment variables
+
+---
+
+## ❗ IMPORTANT
+
+- Must be fully working
+- No demo
+- Real integration with Instagram images
+- Clean, maintainable code

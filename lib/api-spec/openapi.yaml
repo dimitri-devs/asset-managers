@@ -3,13 +3,24 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: El Hawes Travel Platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: trips
+    description: Trip management
+  - name: bookings
+    description: Booking management
+  - name: instagram
+    description: Instagram feed proxy
+  - name: admin
+    description: Admin authentication
+  - name: stats
+    description: Dashboard statistics
+
 paths:
   /healthz:
     get:
@@ -24,6 +35,330 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /trips:
+    get:
+      operationId: listTrips
+      tags: [trips]
+      summary: List all trips
+      parameters:
+        - name: featured
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of trips
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Trip"
+    post:
+      operationId: createTrip
+      tags: [trips]
+      summary: Create a new trip (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTripBody"
+      responses:
+        "201":
+          description: Trip created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trip"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /trips/{id}:
+    get:
+      operationId: getTrip
+      tags: [trips]
+      summary: Get a single trip
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Trip found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trip"
+        "404":
+          description: Trip not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateTrip
+      tags: [trips]
+      summary: Update a trip (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTripBody"
+      responses:
+        "200":
+          description: Trip updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trip"
+        "404":
+          description: Trip not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteTrip
+      tags: [trips]
+      summary: Delete a trip (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Trip deleted
+        "404":
+          description: Trip not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bookings:
+    get:
+      operationId: listBookings
+      tags: [bookings]
+      summary: List all bookings (admin only)
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Submit a booking request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookingBody"
+      responses:
+        "201":
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bookings/{id}:
+    get:
+      operationId: getBooking
+      tags: [bookings]
+      summary: Get a single booking (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Booking found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateBooking
+      tags: [bookings]
+      summary: Update booking status (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBookingBody"
+      responses:
+        "200":
+          description: Booking updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /instagram/feed:
+    get:
+      operationId: getInstagramFeed
+      tags: [instagram]
+      summary: Get curated Instagram-style travel images
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Instagram feed posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InstagramPost"
+
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginBody"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/logout:
+    post:
+      operationId: adminLogout
+      tags: [admin]
+      summary: Admin logout
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/me:
+    get:
+      operationId: getAdminMe
+      tags: [admin]
+      summary: Get current admin session
+      responses:
+        "200":
+          description: Admin session info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAuthResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /stats:
+    get:
+      operationId: getDashboardStats
+      tags: [stats]
+      summary: Get dashboard statistics (admin only)
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +369,388 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    Trip:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        shortDescription:
+          type: string
+        location:
+          type: string
+        country:
+          type: string
+        durationDays:
+          type: integer
+        priceDzd:
+          type: integer
+        originalPriceDzd:
+          type: ["integer", "null"]
+        maxGroupSize:
+          type: integer
+        spotsLeft:
+          type: integer
+        imageUrl:
+          type: string
+        galleryImages:
+          type: array
+          items:
+            type: string
+        highlights:
+          type: array
+          items:
+            type: string
+        included:
+          type: array
+          items:
+            type: string
+        excluded:
+          type: array
+          items:
+            type: string
+        isFeatured:
+          type: boolean
+        isActive:
+          type: boolean
+        departureDate:
+          type: ["string", "null"]
+        returnDate:
+          type: ["string", "null"]
+        difficulty:
+          type: string
+        category:
+          type: string
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - title
+        - slug
+        - description
+        - shortDescription
+        - location
+        - country
+        - durationDays
+        - priceDzd
+        - originalPriceDzd
+        - maxGroupSize
+        - spotsLeft
+        - imageUrl
+        - galleryImages
+        - highlights
+        - included
+        - excluded
+        - isFeatured
+        - isActive
+        - departureDate
+        - returnDate
+        - difficulty
+        - category
+        - rating
+        - reviewCount
+        - createdAt
+        - updatedAt
+
+    CreateTripBody:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        shortDescription:
+          type: string
+        location:
+          type: string
+        country:
+          type: string
+        durationDays:
+          type: integer
+        priceDzd:
+          type: integer
+        originalPriceDzd:
+          type: ["integer", "null"]
+        maxGroupSize:
+          type: integer
+        spotsLeft:
+          type: integer
+        imageUrl:
+          type: string
+        galleryImages:
+          type: array
+          items:
+            type: string
+        highlights:
+          type: array
+          items:
+            type: string
+        included:
+          type: array
+          items:
+            type: string
+        excluded:
+          type: array
+          items:
+            type: string
+        isFeatured:
+          type: boolean
+        isActive:
+          type: boolean
+        departureDate:
+          type: ["string", "null"]
+        returnDate:
+          type: ["string", "null"]
+        difficulty:
+          type: string
+        category:
+          type: string
+      required:
+        - title
+        - slug
+        - description
+        - shortDescription
+        - location
+        - country
+        - durationDays
+        - priceDzd
+        - maxGroupSize
+        - spotsLeft
+        - imageUrl
+
+    UpdateTripBody:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        shortDescription:
+          type: string
+        location:
+          type: string
+        country:
+          type: string
+        durationDays:
+          type: integer
+        priceDzd:
+          type: integer
+        originalPriceDzd:
+          type: ["integer", "null"]
+        maxGroupSize:
+          type: integer
+        spotsLeft:
+          type: integer
+        imageUrl:
+          type: string
+        galleryImages:
+          type: array
+          items:
+            type: string
+        highlights:
+          type: array
+          items:
+            type: string
+        included:
+          type: array
+          items:
+            type: string
+        excluded:
+          type: array
+          items:
+            type: string
+        isFeatured:
+          type: boolean
+        isActive:
+          type: boolean
+        departureDate:
+          type: ["string", "null"]
+        returnDate:
+          type: ["string", "null"]
+        difficulty:
+          type: string
+        category:
+          type: string
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        tripId:
+          type: integer
+        tripTitle:
+          type: string
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        numberOfPeople:
+          type: integer
+        message:
+          type: ["string", "null"]
+        status:
+          type: string
+        totalPriceDzd:
+          type: integer
+        preferredDate:
+          type: ["string", "null"]
+        isContacted:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - tripId
+        - tripTitle
+        - fullName
+        - email
+        - phone
+        - numberOfPeople
+        - message
+        - status
+        - totalPriceDzd
+        - preferredDate
+        - isContacted
+        - createdAt
+        - updatedAt
+
+    CreateBookingBody:
+      type: object
+      properties:
+        tripId:
+          type: integer
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        numberOfPeople:
+          type: integer
+        message:
+          type: string
+        preferredDate:
+          type: string
+      required:
+        - tripId
+        - fullName
+        - email
+        - phone
+        - numberOfPeople
+
+    UpdateBookingBody:
+      type: object
+      properties:
+        status:
+          type: string
+        isContacted:
+          type: boolean
+
+    InstagramPost:
+      type: object
+      properties:
+        id:
+          type: string
+        imageUrl:
+          type: string
+        caption:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        likes:
+          type: integer
+        permalink:
+          type: string
+      required:
+        - id
+        - imageUrl
+        - caption
+        - location
+        - likes
+        - permalink
+
+    AdminLoginBody:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    AdminAuthResponse:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+        username:
+          type: string
+      required:
+        - authenticated
+        - username
+
+    DashboardStats:
+      type: object
+      properties:
+        totalTrips:
+          type: integer
+        activeTrips:
+          type: integer
+        totalBookings:
+          type: integer
+        pendingBookings:
+          type: integer
+        confirmedBookings:
+          type: integer
+        totalRevenueDzd:
+          type: integer
+        recentBookings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Booking"
+      required:
+        - totalTrips
+        - activeTrips
+        - totalBookings
+        - pendingBookings
+        - confirmedBookings
+        - totalRevenueDzd
+        - recentBookings
